@@ -1,20 +1,19 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-// console.log(canvas.width);
-// console.log(canvas.height);
-// ctx.fillStyle = "green";
-// ctx.fillRect(1, 1, 10, 10);
-console.log(canvas.mou);
 
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 canvas.addEventListener("mousemove", getMousePosition);
 canvas.addEventListener("mousedown", mouseDown);
 canvas.addEventListener("mouseup", mouseUp);
 
 let mouseDownTime = -1;
-let mouseUpTime = -1;
 let mouseX = -1;
 let mouseY = -1;
-
 let bloomEventActive = true;
 
 function getMousePosition(event) {
@@ -22,7 +21,7 @@ function getMousePosition(event) {
   mouseX = event.clientX - rect.left;
   mouseY = event.clientY - rect.top;
 
-  //   console.log(`Mouse: ${mouseX}, ${mouseY}`);
+    // console.log(`Mouse: ${mouseX}, ${mouseY}`);
 }
 
 function mouseDown(event) {
@@ -33,35 +32,47 @@ function mouseUp(event) {
   mouseUpTime = Date.now();
   if (bloomEventActive) {
     let bloomDuration = mouseUpTime - mouseDownTime;
-    bloomDuration = Math.min(2000, bloomDuration);
-    bloomDuration = Math.max(100, bloomDuration);
+    bloomDuration = Math.min(1000, bloomDuration);
+    bloomDuration = Math.max(10, bloomDuration);
     // console.log("Bloom: " + bloomDuration);
 
     triggerBloomEffect(bloomDuration, getMousePos(event));
   }
 }
 
-function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
+function getMousePos(evt) {
+  const rect = canvas.getBoundingClientRect();
   return {
     x: evt.clientX - rect.left,
     y: evt.clientY - rect.top,
   };
 }
 
-function triggerBloomEffect(bloomDuration, { mousePos }) {
+function triggerBloomEffect(bloomDuration, mousePos) {
+  const size = bloomDuration / 10;
+  const centerX = mousePos.x;
+  const centerY = mousePos.y;
+
   console.log(
     "Triggering bloom effect for " +
       bloomDuration +
       "ms @ " +
-      mousePos.x +
+      centerX +
       ", " +
-      mousePos.y
+      centerY
   );
-  ctx.fillStyle = "red";
-  const size = bloomDuration / 10;
-  ctx.fillRect(mouseX - size, mouseY - size, size * 2, size * 2);
 
-  //   console.log(mouseX - size, mouseY - size, size * 2, size * 2);
-  console.log(size);
+  // ctx.reset();
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, size, 0, 2 * Math.PI)
+  ctx.fillStyle = getRandomRgba();
+  ctx.fill();
+}
+
+function getRandomRgba(){
+  return `rgba(${getRandomInt(0,255)}, ${getRandomInt(0,255)}, ${getRandomInt(0,255)}, ${Math.random()})`;
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
