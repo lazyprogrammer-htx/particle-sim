@@ -6,22 +6,36 @@
     <title>Particle Sim</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@4"></script> -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="bg-black text-white w-full h-screen ">
+  <body class="bg-black text-white w-full h-screen">
     <!-- <h2 class="m-2">Particle Sim</h2> -->
-     <div class="fixed flex-row">
+    <div class="fixed flex-row">
       <div class="flex items-center flex-col border-1 border-red p-1 m-2">
         <label for="acceleration100x">Acceleration</label>
-        <input type="range" id="acceleration100x" name="acceleration100x" min="0" max="300" value="115" >
+        <input
+          type="range"
+          id="acceleration100x"
+          name="acceleration100x"
+          min="0"
+          max="300"
+          value="10"
+        />
         <span id="acceleration100xDisplay"></span>
       </div>
       <div class="flex items-center flex-col border-1 border-red p-1 m-2">
         <label for="speed">Speed</label>
-        <input type="range" id="speed" name="speed" min="0" max="1000" value="250" >
+        <input
+          type="range"
+          id="speed"
+          name="speed"
+          min="0"
+          max="1000"
+          value="500"
+        />
         <span id="speedDisplay"></span>
       </div>
-     </div>
+    </div>
 
     <canvas id="canvas" class="block w-full h-full border-1 border-gray-500">
     </canvas>
