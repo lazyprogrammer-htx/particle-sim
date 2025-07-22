@@ -83,7 +83,7 @@ function getRandomInt(min, max) {
 function changeUserSettings(){
   acceleration = ACCELERATION_INPUT.value / 100;
   speed = SPEED_INPUT.value; // / 100;
-  console.log(`\nAcc: ${acceleration}\tSpeed${speed}\n`)
+  console.log(`\nAcc: ${acceleration}\tSpeed: ${speed}\n`)
   ACCELERATION_DISPLAY.textContent = acceleration;
   SPEED_DISPLAY.textContent = speed;
 }
