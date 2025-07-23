@@ -34,6 +34,9 @@ function addNewParticle(x, y, xSpeed, ySpeed, size, color) {
     ySpeed,
     size,
     color,
+    lifetime: performance.now() + getRandomInt(2000, 6000), // 2-6 seconds
+    driftX: (Math.random() - 0.5) * 0.2, // Random drift -0.1 to 0.1
+    driftY: (Math.random() - 0.5) * 0.2
   };
   particles.push(newParticle);
 }
@@ -128,12 +131,29 @@ function calculateNewPositions() {
   const speedFactor = speed / 1000;
 
   let newParticles = [];
+  
   particles.forEach((particle) => {
+    // Skip particles that have exceeded their lifetime
+    if (currentTime > particle.lifetime) {
+      return;
+    }
+    
     const newPositionParticle = particle;
     const xMovement = (particle.xSpeed * speedFactor) * timeFactor;
     const yMovement = (particle.ySpeed * speedFactor) * timeFactor;
-    newPositionParticle.x += xMovement;
-    newPositionParticle.y += yMovement;
+    
+    // Add random drift to prevent stagnation
+    newPositionParticle.x += xMovement + particle.driftX;
+    newPositionParticle.y += yMovement + particle.driftY;
+    
+    // Add slight random movement each frame
+    particle.driftX += (Math.random() - 0.5) * 0.05;
+    particle.driftY += (Math.random() - 0.5) * 0.05;
+    
+    // Limit drift to prevent particles from moving too erratically
+    particle.driftX = Math.max(-1, Math.min(1, particle.driftX));
+    particle.driftY = Math.max(-1, Math.min(1, particle.driftY));
+    
     if (
       newPositionParticle.x >= 0 &&
       newPositionParticle.y >= 0 &&
@@ -141,8 +161,6 @@ function calculateNewPositions() {
       newPositionParticle.y < height
     ) {
       newParticles.push(newPositionParticle);
-    } else {
-      // console.log(`Removed: ${newPositionParticle}`);
     }
   });
 
@@ -173,6 +191,7 @@ const ACCELERATION_DISPLAY = document.querySelector("#acceleration100xDisplay");
 
 const SPEED_INPUT = document.querySelector("#speed");
 const SPEED_DISPLAY = document.querySelector("#speedDisplay");
+const FPS_COUNTER = document.querySelector("#fpsCounter");
 
 const MAX_BLOOM_DURATION = 1000;
 const MIN_BLOOM_DURATION = 100;
@@ -188,6 +207,11 @@ let bloomEventActive = true;
 
 let particles = [];
 
+// FPS calculation variables
+let frameCount = 0;
+let fpsLastTime = performance.now();
+let currentFPS = 0;
+
 resizeCanvas();
 init();
 
@@ -200,8 +224,22 @@ init();
 //   // prettyPrintParticles();
 // }, 500);
 
+function updateFPS() {
+  frameCount++;
+  const now = performance.now();
+  const elapsed = now - fpsLastTime;
+  
+  if (elapsed >= 1000) { // Update FPS every second
+    currentFPS = Math.round((frameCount * 1000) / elapsed);
+    FPS_COUNTER.textContent = `FPS: ${currentFPS}`;
+    frameCount = 0;
+    fpsLastTime = now;
+  }
+}
+
 function animationLoop() {
   calculateNewPositions();
+  updateFPS();
   requestAnimationFrame(animationLoop);
 }
 
