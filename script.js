@@ -19,7 +19,7 @@ function triggerBloomEffect(bloomDuration, mousePos) {
       y + getRandomInt(0 - size, size),
       thisParticleXSpeed,
       thisParticleYSpeed,
-      getRandomInt(2, 10),
+      getRandomInt(4, 12),
       color
     );
   }
@@ -27,8 +27,6 @@ function triggerBloomEffect(bloomDuration, mousePos) {
 }
 
 function addNewParticle(x, y, xSpeed, ySpeed, size, color) {
-  // console.log(`Particle(${size} / ${color}) ${x}, ${y}  @ ${xSpeed},${ySpeed}`);
-  // drawDot(x, y, size, getRandomRgba());
   const newParticle = {
     x,
     y,
@@ -37,8 +35,7 @@ function addNewParticle(x, y, xSpeed, ySpeed, size, color) {
     size,
     color,
   };
-  particles = [...particles, newParticle];
-  // console.log(newParticle);
+  particles.push(newParticle);
 }
 
 function drawDot(x, y, size, color) {
@@ -91,7 +88,7 @@ function getRandomRgba() {
   return `rgba(${getRandomInt(100, 255)}, ${getRandomInt(
     100,
     255
-  )}, ${getRandomInt(100, 255)}, ${Math.random()})`;
+  )}, ${getRandomInt(100, 255)}, ${0.7 + Math.random() * 0.3})`;
 }
 
 function getRandomInt(min, max) {
@@ -100,8 +97,7 @@ function getRandomInt(min, max) {
 
 function changeUserSettings() {
   acceleration = ACCELERATION_INPUT.value / 1000;
-  speed = SPEED_INPUT.value / 1000; // / 100;
-  console.log(`\nAcc: ${acceleration}\tSpeed: ${speed}\n`);
+  speed = SPEED_INPUT.value / 1000;
   ACCELERATION_DISPLAY.textContent = acceleration;
   SPEED_DISPLAY.textContent = speed;
 }
@@ -123,37 +119,28 @@ function init() {
 }
 
 function calculateNewPositions() {
-  const currentTime = new Date();
+  const currentTime = performance.now();
   const timeElapsedSeconds = (currentTime - lastTime) / 1000;
   const { width, height } = getCanvasSize();
-  // console.log(width, height);
   if (timeElapsedSeconds < 0.01) return;
+
+  const timeFactor = acceleration / (timeElapsedSeconds * timeElapsedSeconds);
+  const speedFactor = speed / 1000;
 
   let newParticles = [];
   particles.forEach((particle) => {
     const newPositionParticle = particle;
-    const xMovement =
-      (((particle.xSpeed * speed) / 1000) * acceleration) /
-      timeElapsedSeconds /
-      timeElapsedSeconds;
-    const yMovement =
-      (((particle.ySpeed * speed) / 1000) * acceleration) /
-      timeElapsedSeconds /
-      timeElapsedSeconds;
+    const xMovement = (particle.xSpeed * speedFactor) * timeFactor;
+    const yMovement = (particle.ySpeed * speedFactor) * timeFactor;
     newPositionParticle.x += xMovement;
     newPositionParticle.y += yMovement;
-    console.log(
-      `old: ${particle.x}, ${particle.y}  @  ${particle.xSpeed}, ${particle.ySpeed}`
-    );
-    console.log(`new: ${newPositionParticle.x}, ${newPositionParticle.y}`);
-    console.log(" ");
     if (
       newPositionParticle.x >= 0 &&
       newPositionParticle.y >= 0 &&
       newPositionParticle.x < width &&
       newPositionParticle.y < height
     ) {
-      newParticles = [...newParticles, newPositionParticle];
+      newParticles.push(newPositionParticle);
     } else {
       // console.log(`Removed: ${newPositionParticle}`);
     }
@@ -169,9 +156,8 @@ function calculateNewPositions() {
   particles = newParticles;
   newParticles = null;
 
-  console.log(timeElapsedSeconds);
 
-  lastTime = new Date();
+  lastTime = performance.now();
 }
 
 function prettyPrintParticles() {
@@ -193,7 +179,7 @@ const MIN_BLOOM_DURATION = 100;
 
 let acceleration = 1;
 let speed = 1;
-let lastTime = new Date();
+let lastTime = performance.now();
 
 let mouseDownTime = -1;
 let mouseX = -1;
@@ -214,9 +200,12 @@ init();
 //   // prettyPrintParticles();
 // }, 500);
 
-setInterval(() => {
+function animationLoop() {
   calculateNewPositions();
-}, 1000 / 60);
+  requestAnimationFrame(animationLoop);
+}
+
+animationLoop();
 
 // drawDot(-100, -100, 5, getRandomRgba());
 // drawDot(-1, -1, 5, getRandomRgba());
