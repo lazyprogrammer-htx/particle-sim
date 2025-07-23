@@ -133,9 +133,13 @@ function calculateNewPositions() {
   particles.forEach((particle) => {
     const newPositionParticle = particle;
     const xMovement =
-      ((particle.xSpeed * speed) / 1000 + acceleration) / timeElapsedSeconds;
+      (((particle.xSpeed * speed) / 1000) * acceleration) /
+      timeElapsedSeconds /
+      timeElapsedSeconds;
     const yMovement =
-      ((particle.ySpeed * speed) / 1000 + acceleration) / timeElapsedSeconds;
+      (((particle.ySpeed * speed) / 1000) * acceleration) /
+      timeElapsedSeconds /
+      timeElapsedSeconds;
     newPositionParticle.x += xMovement;
     newPositionParticle.y += yMovement;
     console.log(
