@@ -10,7 +10,7 @@ function triggerBloomEffect(bloomDuration, mousePos) {
   // drawDot(x, y, size, getRandomRgba())
   const color = getRandomRgba();
 
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i < size * 10; i++) {
     const thisParticleXSpeed = getRandomInt(0 - size, size);
     const thisParticleYSpeed = getRandomInt(0 - size, size);
     // console.log(`${thisParticleXSpeed} ${thisParticleYSpeed}`);
