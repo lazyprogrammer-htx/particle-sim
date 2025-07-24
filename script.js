@@ -34,7 +34,7 @@ function addNewParticle(x, y, xSpeed, ySpeed, size, color) {
     ySpeed,
     size,
     color,
-    lifetime: performance.now() + getRandomInt(2000, 6000), // 2-6 seconds
+    lifetime: performance.now() + getRandomInt(3000, 10000), // 2-6 seconds
     driftX: (Math.random() - 0.5) * 0.2, // Random drift -0.1 to 0.1
     driftY: (Math.random() - 0.5) * 0.2
   };
@@ -101,8 +101,8 @@ function getRandomInt(min, max) {
 function changeUserSettings() {
   acceleration = ACCELERATION_INPUT.value / 1000;
   speed = SPEED_INPUT.value / 1000;
-  ACCELERATION_DISPLAY.textContent = acceleration;
-  SPEED_DISPLAY.textContent = speed;
+  ACCELERATION_DISPLAY.textContent = ACCELERATION_INPUT.value + " /1000" ;  
+  SPEED_DISPLAY.textContent = SPEED_INPUT.value + " /1000" ;
 }
 
 function init() {
@@ -127,7 +127,7 @@ function calculateNewPositions() {
   const { width, height } = getCanvasSize();
   if (timeElapsedSeconds < 0.01) return;
 
-  const timeFactor = acceleration / (timeElapsedSeconds * timeElapsedSeconds);
+  const timeFactor = acceleration * acceleration / (timeElapsedSeconds * timeElapsedSeconds);
   const speedFactor = speed / 1000;
 
   let newParticles = [];
@@ -192,6 +192,7 @@ const ACCELERATION_DISPLAY = document.querySelector("#acceleration100xDisplay");
 const SPEED_INPUT = document.querySelector("#speed");
 const SPEED_DISPLAY = document.querySelector("#speedDisplay");
 const FPS_COUNTER = document.querySelector("#fpsCounter");
+const PARTICLE_COUNTER = document.querySelector("#particleCounter");
 
 const MAX_BLOOM_DURATION = 1000;
 const MIN_BLOOM_DURATION = 100;
@@ -234,6 +235,8 @@ function updateFPS() {
     FPS_COUNTER.textContent = `FPS: ${currentFPS}`;
     frameCount = 0;
     fpsLastTime = now;
+
+    PARTICLE_COUNTER.textContent = `P: ${particles.length}`;
   }
 }
 
