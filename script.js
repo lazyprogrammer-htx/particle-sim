@@ -34,7 +34,8 @@ function addNewParticle(x, y, xSpeed, ySpeed, size, color) {
     ySpeed,
     size,
     color,
-    lifetime: performance.now() + getRandomInt(3000, 10000), // 2-6 seconds
+    // lifetime: performance.now() + getRandomInt(3000, 10000), // 2-6 seconds
+    lifetime: performance.now() + 10000; //getRandomInt(3000, 10000), // 2-6 seconds
     driftX: (Math.random() - 0.5) * 0.2, // Random drift -0.1 to 0.1
     driftY: (Math.random() - 0.5) * 0.2
   };
